@@ -25,7 +25,7 @@ export class PatientsController {
   @Post(':id/medical-history')
   async createMedicalHistory(
     @Param('id', new ParseIntPipe()) id: number,
-    @Body('createMedicalHistoryDto')
+    @Body()
     createMedicalHistoryDto: CreatePatientMedicalHistoryDto,
     @Res() res: Response,
   ) {
@@ -40,7 +40,7 @@ export class PatientsController {
   @Post(':id/infusion-history')
   async createInfusionHistory(
     @Param('id', new ParseIntPipe()) id: number,
-    @Body('createInfusionHistoryDto')
+    @Body()
     createInfusionHistoryDto: CreatePatientInfusionHistoryDto,
     @Res() res: Response,
   ) {
@@ -57,7 +57,7 @@ export class PatientsController {
   @Patch(':id/medical-history')
   async updateMedicalHistory(
     @Param('id', new ParseIntPipe()) id: number,
-    @Body('updateMedicalHistoryDto')
+    @Body()
     updateMedicalHistoryDto: UpdatePatientMedicalHistoryDto,
     @Res() res: Response,
   ) {
@@ -74,7 +74,7 @@ export class PatientsController {
   @Patch(':id/infusion-history')
   async updateInfusionHistory(
     @Param('id', new ParseIntPipe()) id: number,
-    @Body('updateInfusionHistoryDto')
+    @Body()
     updateInfusionHistoryDto: UpdatePatientInfusionHistoryDto,
     @Res() res: Response,
   ) {
