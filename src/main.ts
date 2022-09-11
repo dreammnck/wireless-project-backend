@@ -13,7 +13,7 @@ async function bootstrap() {
   const mqttUrl = configService.get<string>('mqtt.url');
 
   app.use(cookieParser());
-  app.use(new ValidationPipe())
+  app.useGlobalPipes(new ValidationPipe())
 
   const microserviceMqtt = app.connectMicroservice<MicroserviceOptions>({
     transport: Transport.MQTT,
