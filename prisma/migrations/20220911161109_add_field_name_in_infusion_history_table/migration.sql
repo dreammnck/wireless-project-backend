@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE `InfusionHistory` ADD COLUMN `createdDate` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    ADD COLUMN `updatedDate` DATETIME(3) NULL;

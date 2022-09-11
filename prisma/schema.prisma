@@ -10,9 +10,58 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// Example
-model User {
-  id        Int    @id @default(autoincrement())
-  firstname String
-  lastname  String
+model Floor {
+  id    Int    @id @default(autoincrement())
+  name  String
+  rooms Room[]
+}
+
+model Room {
+  id        Int       @id @default(autoincrement())
+  name      String
+  floorId   Int
+  isTrigger Boolean   @default(false)
+  floor     Floor     @relation(fields: [floorId], references: [id])
+  patients  Patient[]
+}
+
+model Patient {
+  id              Int               @id @default(autoincrement())
+  firstname       String
+  lastname        String
+  age             Int
+  roomId          Int
+  isCheckout      Boolean           @default(false)
+  class           PatientClass
+  room            Room              @relation(fields: [roomId], references: [id])
+  medicalHostory  MedicleHistory[]
+  infusionHistory InfusionHistory[]
+}
+
+model MedicleHistory {
+  id             Int       @id @default(autoincrement())
+  medicalHistory String
+  doctor         String
+  patientId      Int
+  createdDate    DateTime  @default(now())
+  updatedDate    DateTime?
+  deletedDate    DateTime?
+  patient        Patient   @relation(fields: [patientId], references: [id])
+}
+
+model InfusionHistory {
+  id           Int       @id @default(autoincrement())
+  patientId    Int
+  dropRate     Float
+  serialNumber String
+  doctor       String
+  createdDate  DateTime  @default(now())
+  updatedDate  DateTime?
+  isCompleted  Boolean   @default(false)
+  patient      Patient   @relation(fields: [patientId], references: [id])
+}
+
+enum PatientClass {
+  VIP
+  NORMAL
 }
