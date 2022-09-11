@@ -1,3 +1,6 @@
+import { PatientsModule } from './patients/patients.module';
+import { RoomsModule } from './rooms/rooms.module';
+import { FloorsModule } from './floors/floors.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
@@ -13,6 +16,9 @@ import configuration from './config/configuration';
       load: [configuration],
     }),
     PrismaModule,
+    FloorsModule,
+    RoomsModule,
+    PatientsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
