@@ -1,3 +1,4 @@
+import { AuthModule } from './auth/auth.module';
 import { PatientsModule } from './patients/patients.module';
 import { RoomsModule } from './rooms/rooms.module';
 import { FloorsModule } from './floors/floors.module';
@@ -19,6 +20,7 @@ import configuration from './config/configuration';
     FloorsModule,
     RoomsModule,
     PatientsModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
