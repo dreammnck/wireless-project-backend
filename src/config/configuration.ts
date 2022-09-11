@@ -4,4 +4,8 @@ export default () => ({
   mqtt: {
     url: process.env.MQTT_URL,
   },
+  jwt: {
+    secret: process.env.SECRET,
+    expireIn: process.env.EXPIRE_IN,
+  },
 });
