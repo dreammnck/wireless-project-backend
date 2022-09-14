@@ -1,7 +1,6 @@
-import { IsBoolean, IsNotEmpty } from "class-validator";
+import { IsBoolean, IsNotEmpty } from 'class-validator';
 
 export class UpdatePatientInfusionHistoryDto {
-
   @IsNotEmpty()
   id: number;
 
