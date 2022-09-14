@@ -1,3 +1,4 @@
+import { MqttModule } from './mqtt/mqtt.module';
 import { AuthModule } from './auth/auth.module';
 import { PatientsModule } from './patients/patients.module';
 import { RoomsModule } from './rooms/rooms.module';
@@ -21,6 +22,7 @@ import configuration from './config/configuration';
     RoomsModule,
     PatientsModule,
     AuthModule,
+    MqttModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -35,12 +35,11 @@ export class AuthService {
       });
     }
 
-    const token = this.generateToken({username, role: Role.ADMIN});
+    const token = this.generateToken({ username, role: Role.ADMIN });
     return token;
   }
 
-  private  generateToken(payload: PayloadDto) {
-    return this.jwtService.sign(payload)
-
+  private generateToken(payload: PayloadDto) {
+    return this.jwtService.sign(payload);
   }
 }
