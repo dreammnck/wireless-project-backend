@@ -36,3 +36,5 @@ lerna-debug.log*
 
 yarn.lock
 .env
+arduino-python/env/**
+arduino-python/.env
