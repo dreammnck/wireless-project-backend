@@ -8,10 +8,10 @@ import {
 
 @Controller()
 export class MqttController {
-  constructor() {}
+  constructor(private readonly mqtt) {}
 
-  @MessagePattern('test')
-  test(@Payload() data: boolean, @Ctx() context: MqttContext) {
-    console.log(`data ${data}`);
+  @MessagePattern('saline')
+  test(@Payload() data: string, @Ctx() context: MqttContext) {
+    console.log(data);
   }
 }

@@ -9,7 +9,7 @@ import { MqttController } from './mqtt.controller';
       {
         name: 'SENSOR_SERVICE',
         useFactory: (configService: ConfigService) => {
-          const mqttUrl = configService.get<string>('mqtt_url');
+          const mqttUrl = configService.get<string>('mqtt.url');
           return {
             transport: Transport.MQTT,
             options: {
