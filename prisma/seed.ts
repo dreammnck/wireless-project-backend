@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, PatientClass } from '@prisma/client';
 import { faker } from '@faker-js/faker';
 import bcrypt from 'bcrypt';
 
@@ -53,6 +53,7 @@ const createPatient = async () => {
       lastname: faker.name.lastName(),
       age: Math.floor(Math.random() * 80),
       roomId: i,
+      class: i % 5 === 0 ? PatientClass.VIP : PatientClass.NORMAL,
     });
   }
 
@@ -60,24 +61,26 @@ const createPatient = async () => {
 };
 
 const createMedicalHistory = async () => {
+  const doctors = [
+    faker.name.firstName(),
+    faker.name.firstName(),
+    faker.name.firstName(),
+    faker.name.firstName(),
+    faker.name.firstName(),
+  ];
+  const data = [];
 
-  const doctors = [faker.name.firstName(), faker.name.firstName(), faker.name.firstName(), faker.name.firstName(), faker.name.firstName()];
-  const data = []
-
-  for(let i=1; i<=25; i++) {
+  for (let i = 1; i <= 25; i++) {
     const index = Math.floor(Math.random() * 5);
-    data.push(
-      {
-        medicalHistory: faker.lorem.lines(),
-        doctor: doctors[index],
-        patientId: i
-      }
-    );
+    data.push({
+      medicalHistory: faker.lorem.sentence(),
+      doctor: doctors[index],
+      patientId: i,
+    });
   }
 
-  await prisma.medicleHistory.createMany({data});
-
-}
+  await prisma.medicleHistory.createMany({ data });
+};
 
 const main = async () => {
   await init();
