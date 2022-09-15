@@ -5,9 +5,9 @@
   "author": "",
   "private": true,
   "license": "UNLICENSED",
-"prisma": {
-   "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
-},
+  "prisma": {
+    "seed": "ts-node prisma/seed.ts"
+  },
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "nest build",
@@ -40,6 +40,7 @@
     "class-validator": "^0.13.2",
     "cookie-parser": "^1.4.6",
     "dayjs": "^1.11.5",
+    "dotenv": "^16.0.2",
     "mqtt": "^4.3.7",
     "passport": "^0.6.0",
     "passport-jwt": "^4.0.0",
