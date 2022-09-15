@@ -8,7 +8,6 @@ import {
 import { JwtService } from '@nestjs/jwt';
 import { LoginDto, PayloadDto } from './dto';
 import bcrypt from 'bcrypt';
-import { Role } from 'src/types';
 
 @Injectable()
 export class AuthService {
@@ -19,23 +18,23 @@ export class AuthService {
 
   async login(loginDto: LoginDto) {
     const { username, password } = loginDto;
-    const admin = await this.prisma.admin.findUnique({ where: { username } });
+    const user = await this.prisma.user.findUnique({ where: { username } });
 
-    if (!admin) {
+    if (!user) {
       throw new NotFoundException({
         errorCode: HttpStatus.NOT_FOUND,
-        message: 'Admin not Found',
+        message: 'User not Found',
       });
     }
 
-    if (!(await bcrypt.compare(password, admin['password']))) {
+    if (!(await bcrypt.compare(password, user['password']))) {
       throw new BadRequestException({
         errorCode: HttpStatus.BAD_REQUEST,
         message: `Invalid Username/Password`,
       });
     }
 
-    const token = this.generateToken({ username, role: Role.ADMIN });
+    const token = this.generateToken({ username, role: user.role });
     return token;
   }
 
