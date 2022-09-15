@@ -1,4 +1,7 @@
-import { Body, HttpStatus, Patch, Post } from '@nestjs/common';
+import { JwtAuthGuard } from './../auth/jwt-auth.guard';
+import { ExtendRequest } from './../types/request.type';
+import { RolesGuard } from './../utils/guards/role.guard';
+import { Body, HttpStatus, Patch, Post, Req, UseGuards } from '@nestjs/common';
 import { PatientsService } from './patients.service';
 import { Controller, Get, Param, ParseIntPipe, Res } from '@nestjs/common';
 import { Response } from 'express';
@@ -8,8 +11,10 @@ import {
   UpdatePatientInfusionHistoryDto,
   UpdatePatientMedicalHistoryDto,
 } from './dto';
+import { Role } from 'src/types';
 
-@Controller('patient')
+@UseGuards(JwtAuthGuard)
+@Controller('patients')
 export class PatientsController {
   constructor(private readonly patientsService: PatientsService) {}
 
@@ -22,8 +27,10 @@ export class PatientsController {
     return res.json({ data: patient }).status(HttpStatus.OK);
   }
 
+  @UseGuards(new RolesGuard(Role.DOCTOR))
   @Post(':id/medical-history')
   async createMedicalHistory(
+    @Req() req: ExtendRequest,
     @Param('id', new ParseIntPipe()) id: number,
     @Body()
     createMedicalHistoryDto: CreatePatientMedicalHistoryDto,
@@ -32,21 +39,26 @@ export class PatientsController {
     const createdMedicalHistory =
       await this.patientsService.createMedicalHistory(
         id,
+        req.user.username,
         createMedicalHistoryDto,
       );
     return res.json({ data: createdMedicalHistory }).status(HttpStatus.CREATED);
   }
 
+  @UseGuards(new RolesGuard(Role.NURSE))
   @Post(':id/infusion-history')
   async createInfusionHistory(
+    @Req() req: ExtendRequest,
     @Param('id', new ParseIntPipe()) id: number,
     @Body()
     createInfusionHistoryDto: CreatePatientInfusionHistoryDto,
     @Res() res: Response,
   ) {
+    const { username } = req.user;
     const createdInfusionHistory =
       await this.patientsService.createInfusionHistory(
         id,
+        username,
         createInfusionHistoryDto,
       );
     return res
@@ -54,8 +66,10 @@ export class PatientsController {
       .status(HttpStatus.CREATED);
   }
 
+  @UseGuards(new RolesGuard(Role.DOCTOR))
   @Patch(':id/medical-history')
   async updateMedicalHistory(
+    @Req() req: ExtendRequest,
     @Param('id', new ParseIntPipe()) id: number,
     @Body()
     updateMedicalHistoryDto: UpdatePatientMedicalHistoryDto,
@@ -64,6 +78,7 @@ export class PatientsController {
     const updatePatientMedicalHistory =
       await this.patientsService.updateMedicalHistory(
         id,
+        req.user.username,
         updateMedicalHistoryDto,
       );
     return res
@@ -71,8 +86,10 @@ export class PatientsController {
       .status(HttpStatus.CREATED);
   }
 
+  @UseGuards(new RolesGuard(Role.NURSE))
   @Patch(':id/infusion-history')
   async updateInfusionHistory(
+    @Req() req: ExtendRequest,
     @Param('id', new ParseIntPipe()) id: number,
     @Body()
     updateInfusionHistoryDto: UpdatePatientInfusionHistoryDto,
@@ -81,6 +98,7 @@ export class PatientsController {
     const updateInfusionHistory =
       await this.patientsService.updateInfusionHistory(
         id,
+        req.user.username,
         updateInfusionHistoryDto,
       );
     return res.json({ data: updateInfusionHistory }).status(HttpStatus.CREATED);

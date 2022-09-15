@@ -4,5 +4,6 @@ export enum PatientClass {
 }
 
 export enum Role {
-  ADMIN = 'admin',
+  DOCTOR = 'DOCTOR',
+  NURSE = 'NURSE',
 }

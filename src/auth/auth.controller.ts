@@ -7,9 +7,8 @@ import {
   Post,
   Res,
   HttpStatus,
-  Req,
 } from '@nestjs/common';
-import { Response, Request } from 'express';
+import { Response } from 'express';
 
 @Controller('auth')
 export class AuthController {
@@ -18,7 +17,7 @@ export class AuthController {
   async login(@Res() res: Response, @Body() loginDto: LoginDto) {
     const token = await this.authService.login(loginDto);
     res.cookie('token', token, { httpOnly: true });
-    return res.status(HttpStatus.OK).end();
+    return res.json({ data: token }).status(HttpStatus.OK).end();
   }
 
   @Delete('logout')

@@ -1,8 +1,10 @@
-import { HttpStatus, Param, ParseIntPipe } from '@nestjs/common';
+import { JwtAuthGuard } from './../auth/jwt-auth.guard';
+import { HttpStatus, Param, ParseIntPipe, UseGuards } from '@nestjs/common';
 import { Controller, Get, Res } from '@nestjs/common';
 import { Response } from 'express';
 import { FloorsService } from './floors.service';
 
+@UseGuards(JwtAuthGuard)
 @Controller('floors')
 export class FloorsController {
   constructor(private readonly floorsService: FloorsService) {}

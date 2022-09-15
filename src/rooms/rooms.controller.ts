@@ -1,8 +1,10 @@
-import { HttpStatus, Patch } from '@nestjs/common';
+import { JwtAuthGuard } from './../auth/jwt-auth.guard';
+import { HttpStatus, UseGuards } from '@nestjs/common';
 import { RoomsService } from './rooms.service';
 import { Controller, Get, Param, ParseIntPipe, Res } from '@nestjs/common';
 import { Response } from 'express';
 
+@UseGuards(JwtAuthGuard)
 @Controller('rooms')
 export class RoomsController {
   constructor(private readonly roomsService: RoomsService) {}
