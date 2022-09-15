@@ -1,4 +1,3 @@
-import { HttpCode } from '@nestjs/common';
 import { PrismaService } from './../prisma/prisma.service';
 import { HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 
@@ -29,5 +28,7 @@ export class FloorsService {
         message: 'Room Not Found',
       });
     }
+
+    return rooms;
   }
 }

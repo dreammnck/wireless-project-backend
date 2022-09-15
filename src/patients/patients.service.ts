@@ -1,5 +1,9 @@
 import { CreatePatientInfusionHistoryDto } from './dto/create-patient-infusion-history.dto';
-import { ForbiddenException, HttpStatus } from '@nestjs/common';
+import {
+  BadRequestException,
+  ForbiddenException,
+  HttpStatus,
+} from '@nestjs/common';
 import { NotFoundException } from '@nestjs/common';
 import { PrismaService } from './../prisma/prisma.service';
 import { Injectable } from '@nestjs/common';
@@ -17,7 +21,7 @@ export class PatientsService {
   public async findById(id: number) {
     const patient = await this.prisma.patient.findUnique({
       where: { id },
-      select: { medicalHostory: true, infusionHistory: true },
+      include: { medicalHostory: true, infusionHistory: true },
     });
     if (!patient) {
       throw new NotFoundException({
@@ -31,29 +35,55 @@ export class PatientsService {
 
   public async createMedicalHistory(
     patientId: number,
+    doctorUsername: string,
     createPatientMedicalHistoryDto: CreatePatientMedicalHistoryDto,
   ) {
     await this.findById(patientId);
-    const medicalHistory = await this.prisma.medicleHistory.create({
-      data: { patientId, ...createPatientMedicalHistoryDto },
-    });
-
-    return medicalHistory;
+    try {
+      const doctor = await this.findUserByUsername(doctorUsername);
+      const medicalHistory = await this.prisma.medicleHistory.create({
+        data: {
+          doctor: `${doctor.firstname} ${doctor.lastname}`,
+          patientId,
+          ...createPatientMedicalHistoryDto,
+        },
+      });
+      return medicalHistory;
+    } catch (_) {
+      throw new BadRequestException({
+        errorCode: HttpStatus.BAD_REQUEST,
+        message: `Invalid input`,
+      });
+    }
   }
 
   public async createInfusionHistory(
     patientId: number,
+    nurseUsername: string,
     createPatientInfusionHistoryDto: CreatePatientInfusionHistoryDto,
   ) {
     await this.findById(patientId);
-    const createInfusionHistory = await this.prisma.infusionHistory.create({
-      data: { patientId, ...createPatientInfusionHistoryDto },
-    });
-    return createInfusionHistory;
+    try {
+      const nurse = await this.findUserByUsername(nurseUsername);
+      const createInfusionHistory = await this.prisma.infusionHistory.create({
+        data: {
+          nurse: `${nurse.firstname} ${nurse.lastname}`,
+          patientId,
+          ...createPatientInfusionHistoryDto,
+        },
+      });
+      return createInfusionHistory;
+    } catch (_) {
+      throw new BadRequestException({
+        errorCode: HttpStatus.BAD_REQUEST,
+        message: `Invalid input`,
+      });
+    }
   }
 
   public async updateMedicalHistory(
     patientId: number,
+    doctorUsername: string,
     updatePatientMedicalHistoryDto: UpdatePatientMedicalHistoryDto,
   ) {
     const { id, ...rest } = updatePatientMedicalHistoryDto;
@@ -72,15 +102,29 @@ export class PatientsService {
         message: `Patient'id not belong to medical history`,
       });
     }
-    const updatedMedicalHistory = await this.prisma.medicleHistory.update({
-      where: { id },
-      data: { updatedDate: dayjs().toDate(), ...rest },
-    });
-    return updatedMedicalHistory;
+
+    try {
+      const doctor = await this.findUserByUsername(doctorUsername);
+      const updatedMedicalHistory = await this.prisma.medicleHistory.update({
+        where: { id },
+        data: {
+          updatedDate: dayjs().toDate(),
+          doctor: `${doctor.firstname} ${doctor.lastname}`,
+          ...rest,
+        },
+      });
+      return updatedMedicalHistory;
+    } catch (_) {
+      throw new BadRequestException({
+        errorCode: HttpStatus.BAD_REQUEST,
+        message: `Invalid input`,
+      });
+    }
   }
 
   public async updateInfusionHistory(
     patientId: number,
+    nurseUsername: string,
     updatePatientInfusionHistoryDto: UpdatePatientInfusionHistoryDto,
   ) {
     const { id, ...rest } = updatePatientInfusionHistoryDto;
@@ -101,10 +145,33 @@ export class PatientsService {
       });
     }
 
-    const updateInfusionHistory = await this.prisma.infusionHistory.update({
-      where: { id },
-      data: { updatedDate: dayjs().toDate(), ...rest },
-    });
-    return updateInfusionHistory;
+    try {
+      const nurse = await this.findUserByUsername(nurseUsername);
+      const updateInfusionHistory = await this.prisma.infusionHistory.update({
+        where: { id },
+        data: {
+          updatedDate: dayjs().toDate(),
+          nurse: `${nurse.firstname} ${nurse.lastname}`,
+          ...rest,
+        },
+      });
+      return updateInfusionHistory;
+    } catch (_) {
+      throw new BadRequestException({
+        errorCode: HttpStatus.BAD_REQUEST,
+        message: `Invalid input`,
+      });
+    }
+  }
+
+  private async findUserByUsername(username: string) {
+    const user = await this.prisma.user.findUnique({ where: { username } });
+    if (!user) {
+      throw new NotFoundException({
+        errorCode: HttpStatus.NOT_FOUND,
+        message: 'User not Found',
+      });
+    }
+    return user;
   }
 }
