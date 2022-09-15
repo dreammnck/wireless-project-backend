@@ -1,6 +1,9 @@
-import { PrismaClient, PatientClass } from '@prisma/client';
+import { PrismaClient, Role } from '@prisma/client';
 import { faker } from '@faker-js/faker';
 import bcrypt from 'bcrypt';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const prisma = new PrismaClient();
 
@@ -12,32 +15,40 @@ const init = async () => {
   }
 };
 
-const createAdmin = async () => {
-  await prisma.admin.createMany({
-    data: [
-      { username: 'admin', password: bcrypt.hashSync('password1', 5) },
-      { username: 'superAdmin', password: bcrypt.hashSync('password2', 5) },
-    ],
-  });
+const createUser = async () => {
+  const data = [];
+
+  for (let index = 1; index <= 10; index++) {
+    data.push({
+      username: index <= 5 ? `doctor${index}` : `nurse${index}`,
+      password: bcrypt.hashSync(`password${index}`, Number(process.env.SALT)),
+      firstname: faker.name.firstName(),
+      lastname: faker.name.lastName(),
+      role: index <= 5 ? Role.DOCTOR : Role.NURSE,
+    });
+  }
+  await prisma.user.createMany({ data });
 };
 
 const createFloor = async () => {
-  await prisma.floor.createMany({
-    data: [
-      { name: 'floor1' },
-      { name: 'floor2' },
-      { name: 'floor3' },
-      { name: 'floor4' },
-      { name: 'floor5' },
-    ],
-  });
+  const data = [];
+
+  for (let index = 1; index <= 10; index++) {
+    data.push({ name: `floor${index}` });
+  }
+
+  await prisma.floor.createMany({ data });
 };
 
 const createRoom = async () => {
   const data = [];
-  for (let i = 1; i <= 5; i++) {
-    for (let j = 1; j <= 5; j++) {
-      data.push({ name: `${i}0${j}`, floorId: j });
+  for (let i = 1; i <= 10; i++) {
+    for (let j = 1; j <= 14; j++) {
+      data.push({
+        name: `${i < 10 ? 0 : ''}${i}${j < 10 ? 0 : ''}${j}`,
+        floorId: i,
+        isTrigger: Math.random() <= 0.5 ? false : true,
+      });
     }
   }
 
@@ -47,13 +58,12 @@ const createRoom = async () => {
 const createPatient = async () => {
   const data = [];
 
-  for (let i = 1; i <= 25; i++) {
+  for (let i = 1; i <= 140; i++) {
     data.push({
       firstname: faker.name.firstName(),
       lastname: faker.name.lastName(),
       age: Math.floor(Math.random() * 80),
       roomId: i,
-      class: i % 5 === 0 ? PatientClass.VIP : PatientClass.NORMAL,
     });
   }
 
@@ -61,16 +71,14 @@ const createPatient = async () => {
 };
 
 const createMedicalHistory = async () => {
-  const doctors = [
-    faker.name.firstName(),
-    faker.name.firstName(),
-    faker.name.firstName(),
-    faker.name.firstName(),
-    faker.name.firstName(),
-  ];
+  const doctors = (
+    await prisma.user.findMany({ where: { role: Role.DOCTOR } })
+  ).map((doctor) => {
+    return `${doctor.firstname} ${doctor.lastname}`;
+  });
   const data = [];
 
-  for (let i = 1; i <= 25; i++) {
+  for (let i = 1; i <= 140; i++) {
     const index = Math.floor(Math.random() * 5);
     data.push({
       medicalHistory: faker.lorem.sentence(),
@@ -84,7 +92,7 @@ const createMedicalHistory = async () => {
 
 const main = async () => {
   await init();
-  await createAdmin();
+  await createUser();
   await createFloor();
   await createRoom();
   await createPatient();
