@@ -1,5 +1,5 @@
 export class SalineSensorData {
-  sensorId: string;
+  roomId: string;
   sensorValue: number;
   timestamp: string;
 }

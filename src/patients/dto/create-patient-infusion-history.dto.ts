@@ -1,10 +1,6 @@
-import { IsBoolean, IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
 export class CreatePatientInfusionHistoryDto {
-  @IsString()
-  @IsNotEmpty()
-  doctor: string;
-
   @IsString()
   @IsNotEmpty()
   serialNumber: string;
@@ -12,8 +8,4 @@ export class CreatePatientInfusionHistoryDto {
   @IsNumber()
   @IsNotEmpty()
   dropRate: number;
-
-  @IsBoolean()
-  @IsNotEmpty()
-  isCompleted: boolean;
 }
