@@ -8,7 +8,7 @@ import os
 import json
 
 load_dotenv()
-SENSOR_ID='SENSOR0'
+ROOM_ID='0101'
 
 def init_board():
     board = pyfirmata.Arduino(os.getenv('FILE_PORT'))
@@ -34,7 +34,7 @@ def loop(board, mqtt_client):
     while True:
         analog_value = sensor_input_pin.read()
         print(analog_value)
-        mqtt_client.publish('saline', json.dumps({'sensorId': SENSOR_ID, 'sensorValue': analog_value, 'timestamp': str(datetime.now())}))
+        mqtt_client.publish('saline', json.dumps({'roomId': ROOM_ID, 'sensorValue': analog_value, 'timestamp': str(datetime.now())}))
         time.sleep(1)
 
 if __name__ == '__main__':

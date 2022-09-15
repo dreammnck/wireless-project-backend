@@ -9,7 +9,7 @@ import random
 import time
 
 load_dotenv()
-ALL_SENSOR = ['SENSOR1', 'SENSOR2', 'SENSOR3', 'SENSOR4', 'SENSOR5']
+ROOMS = ['0102', '0103', '0104', '0105', '0106']
 
 def connect():
     mqtt_client = mqtt.Client()
@@ -23,18 +23,16 @@ def connect():
     return mqtt_client
 
 
-def producer(sensorId, mqtt_client):
+def producer(room_id, mqtt_client):
     while True:
-        mqtt_client.publish('saline', json.dumps({'sensorId': sensorId, 'sensorValue':  random.random() * (0.300 - 0.250 + 1) + 0.250, 'timestamp': str(datetime.now())}))
+        mqtt_client.publish('saline', json.dumps({'roomId': room_id, 'sensorValue':  random.random() * (0.300 - 0.250 + 1) + 0.250, 'timestamp': str(datetime.now())}))
         time.sleep(1)
         
 
 if __name__ == '__main__':
     mqtt_client = connect()
-    threads = []
     
-    for index in range(len(ALL_SENSOR)):
-        x = threading.Thread(target=producer, args=(ALL_SENSOR[index],mqtt_client))
-        threads.append(x)
-        x.start()
+    for index in range(len(ROOMS)):
+        thread = threading.Thread(target=producer, args=(ROOMS[index],mqtt_client))
+        thread.start()
         
