@@ -1,3 +1,4 @@
+import { MqttService } from './mqtt.service';
 import { Controller } from '@nestjs/common';
 import {
   Ctx,
@@ -5,13 +6,17 @@ import {
   MqttContext,
   Payload,
 } from '@nestjs/microservices';
+import { SalineSensorData } from './dto';
 
 @Controller()
 export class MqttController {
-  constructor(private readonly mqtt) {}
+  constructor(private readonly mqttService: MqttService) {}
 
   @MessagePattern('saline')
-  test(@Payload() data: string, @Ctx() context: MqttContext) {
-    console.log(data);
+  async handleSalineData(
+    @Payload() data: SalineSensorData,
+    @Ctx() _: MqttContext,
+  ) {
+    await this.mqttService.handleSalineData(data);
   }
 }
