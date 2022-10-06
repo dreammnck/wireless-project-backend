@@ -27,6 +27,25 @@ export class PatientsController {
     return res.json({ data: patient }).status(HttpStatus.OK);
   }
 
+  @Get(':id/medical-history')
+  async getMedicalHistory(
+    @Param('id', new ParseIntPipe()) id: number,
+    @Res() res: Response,
+  ) {
+    const medicalHistory =
+      await this.patientsService.getMedicalHistoryByPatientId(id);
+    return res.json({ data: medicalHistory }).status(HttpStatus.OK);
+  }
+
+  @Get(':id/infusion-history')
+  async getInfusionHistory(
+    @Param('id', new ParseIntPipe()) id: number,
+    @Res() res: Response,
+  ) {
+    const infusionHistory = await this.patientsService.getInfusionHistory(id);
+    return res.json({ data: infusionHistory }).status(HttpStatus.OK);
+  }
+
   @UseGuards(new RolesGuard(Role.DOCTOR))
   @Post(':id/medical-history')
   async createMedicalHistory(

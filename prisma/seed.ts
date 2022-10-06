@@ -33,7 +33,7 @@ const createUser = async () => {
 const createFloor = async () => {
   const data = [];
 
-  for (let index = 1; index <= 10; index++) {
+  for (let index = 1; index <= 11; index++) {
     data.push({ name: `floor${index}` });
   }
 
@@ -42,7 +42,7 @@ const createFloor = async () => {
 
 const createRoom = async () => {
   const data = [];
-  for (let i = 1; i <= 10; i++) {
+  for (let i = 1; i <= 11; i++) {
     for (let j = 1; j <= 14; j++) {
       data.push({
         name: `${i < 10 ? 0 : ''}${i}${j < 10 ? 0 : ''}${j}`,
@@ -55,15 +55,61 @@ const createRoom = async () => {
   await prisma.room.createMany({ data });
 };
 
+const createAddress = async () => {
+  const province = [
+    'Bangkok',
+    'Samut Prakan',
+    'Nonthaburi',
+    'Rayong',
+    'Saraburi',
+  ];
+  const district = [
+    ['Bang Su', 'Min Buri', 'Bang Rak', 'Phaya Thai', 'Pahtum Wan'],
+    [
+      'Phra Samut Chedi',
+      'Bang Phli',
+      'Bang Saotong',
+      '	Muang Samut Prakan',
+      'Bang Bo',
+    ],
+    ['Muang Nonthaburi', 'Bang Bua Thong', 'Pak Kret', 'Bang Yai', 'Sai Noi'],
+    ['Muang Rayong', 'Klaeng', 'Khao Chamao', 'Ban Khai', 'Ban Chang'],
+    [
+      'Muang Saraburi',
+      'Chaloem Phakiat',
+      'Kaeng Khoi',
+      'Phra Phutthabat',
+      'Phra Phutthabat',
+    ],
+  ];
+  const data = [];
+
+  for (let i = 1; i <= 154; i++) {
+    const index = Math.floor(Math.random() * 5);
+    const subindex = Math.floor(Math.random() * 5);
+    data.push({
+      province: province[index],
+      district: district[index][subindex],
+      subDistrict: district[index][subindex],
+      zipCode: faker.address.zipCode(),
+    });
+  }
+
+  await prisma.address.createMany({ data });
+};
+
 const createPatient = async () => {
   const data = [];
 
-  for (let i = 1; i <= 140; i++) {
+  for (let i = 1; i <= 154; i++) {
     data.push({
       firstname: faker.name.firstName(),
       lastname: faker.name.lastName(),
-      age: Math.floor(Math.random() * 80),
+      birthDate: faker.date.birthdate({ min: 18, max: 65, mode: 'age' }),
+      phoneNumber: faker.phone.number(),
+      emergencyPhoneNumber: faker.phone.number(),
       roomId: i,
+      addressId: i,
     });
   }
 
@@ -78,7 +124,7 @@ const createMedicalHistory = async () => {
   });
   const data = [];
 
-  for (let i = 1; i <= 140; i++) {
+  for (let i = 1; i <= 154; i++) {
     const index = Math.floor(Math.random() * 5);
     data.push({
       medicalHistory: faker.lorem.sentence(),
@@ -95,6 +141,7 @@ const main = async () => {
   await createUser();
   await createFloor();
   await createRoom();
+  await createAddress();
   await createPatient();
   await createMedicalHistory();
 };
