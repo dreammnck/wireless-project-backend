@@ -38,3 +38,8 @@ yarn.lock
 .env
 arduino-python/env/**
 arduino-python/.env
+
+/Volumes/project/wireless-project/project/backend/roots.pem
+/Volumes/project/wireless-project/project/backend/rsa_cert.pem
+/Volumes/project/wireless-project/project/backend/rsa_private.pem
+/Volumes/project/wireless-project/project/backend/local-topic-364613-1cc2101a0d55.json

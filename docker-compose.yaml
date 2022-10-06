@@ -11,5 +11,20 @@ services:
       - ./mqtt/config:/mosquitto/config
       - persistant_data:/mosquitto/data
       - ./mqtt/mosquitto.log:/mosquitto/log/mosquitto.log
+  backend:
+    image: dreammnck/wireless-project:1.0.0
+    container_name: backend
+    depends_on:
+      - mqtt_broker
+    restart: always
+    ports:
+      - 8080:8080
+    env_file:
+      - .env
 volumes: 
   persistant_data:
+
+# sensor จะมีกี่ชนิด
+# ปัญหา security ของ elk web socket
+# ปัญหา requirement
+
