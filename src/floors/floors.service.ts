@@ -14,7 +14,16 @@ export class FloorsService {
       });
     }
 
-    return floors;
+    const total = (await this.prisma.room.findMany())?.length;
+    const reserved = (await this.prisma.patient.findMany({where: {isCheckout: false}})).length;
+
+    const buildingInfo = {
+      total: total,
+      reserved: reserved,
+      available: total - reserved
+    }
+
+    return {floors, buildingInfo};
   }
 
   public async findRoomByFloorId(floorId: number) {

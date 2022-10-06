@@ -40,15 +40,28 @@ model Room {
 }
 
 model Patient {
-  id              Int               @id @default(autoincrement())
-  firstname       String
-  lastname        String
-  age             Int
-  roomId          Int
-  isCheckout      Boolean           @default(false)
-  room            Room              @relation(fields: [roomId], references: [id])
-  medicalHostory  MedicleHistory[]
-  infusionHistory InfusionHistory[]
+  id                   Int               @id @default(autoincrement())
+  firstname            String
+  lastname             String
+  birthDate            String
+  roomId               Int
+  phoneNumber          String
+  emergencyPhoneNumber String
+  addressId            Int
+  isCheckout           Boolean           @default(false)
+  room                 Room              @relation(fields: [roomId], references: [id])
+  address              Address           @relation(fields: [addressId], references: [id])
+  medicalHostory       MedicleHistory[]
+  infusionHistory      InfusionHistory[]
+}
+
+model Address {
+  id          Int       @id @default(autoincrement())
+  province    String
+  district    String
+  subDistrict String
+  zipCode     String
+  Patient     Patient[]
 }
 
 model MedicleHistory {
@@ -63,13 +76,12 @@ model MedicleHistory {
 }
 
 model InfusionHistory {
-  id           Int       @id @default(autoincrement())
-  patientId    Int
-  dropRate     Float
-  serialNumber String
-  nurse        String
-  createdDate  DateTime  @default(now())
-  updatedDate  DateTime?
-  isCompleted  Boolean   @default(false)
-  patient      Patient   @relation(fields: [patientId], references: [id])
+  id          Int       @id @default(autoincrement())
+  patientId   Int
+  dropRate    Float
+  nurse       String
+  createdDate DateTime  @default(now())
+  updatedDate DateTime?
+  isCompleted Boolean   @default(false)
+  patient     Patient   @relation(fields: [patientId], references: [id])
 }

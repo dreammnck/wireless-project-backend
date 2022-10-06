@@ -21,7 +21,7 @@ export class PatientsService {
   public async findById(id: number) {
     const patient = await this.prisma.patient.findUnique({
       where: { id },
-      include: { medicalHostory: true, infusionHistory: true },
+      include: { address: true, infusionHistory: true, medicalHostory: true },
     });
     if (!patient) {
       throw new NotFoundException({
@@ -62,7 +62,7 @@ export class PatientsService {
     nurseUsername: string,
     createPatientInfusionHistoryDto: CreatePatientInfusionHistoryDto,
   ) {
-    await this.findById(patientId);
+    const patient = await this.findById(patientId);
     try {
       const nurse = await this.findUserByUsername(nurseUsername);
       const createInfusionHistory = await this.prisma.infusionHistory.create({
@@ -72,6 +72,7 @@ export class PatientsService {
           ...createPatientInfusionHistoryDto,
         },
       });
+      await this.prisma.room.update({where: {id: patient.roomId}, data: {isTrigger: false}});
       return createInfusionHistory;
     } catch (_) {
       throw new BadRequestException({
@@ -128,9 +129,8 @@ export class PatientsService {
     updatePatientInfusionHistoryDto: UpdatePatientInfusionHistoryDto,
   ) {
     const { id, ...rest } = updatePatientInfusionHistoryDto;
-    const infusionHistory = await this.prisma.infusionHistory.findUnique({
-      where: { id },
-    });
+    const patient = await this.findById(patientId);
+    const infusionHistory = patient.infusionHistory.find((history) => {return  history.id === id});
     if (!infusionHistory) {
       throw new NotFoundException({
         errorCode: HttpStatus.NOT_FOUND,
@@ -155,6 +155,7 @@ export class PatientsService {
           ...rest,
         },
       });
+      await this.prisma.room.update({where: {id: patient.roomId}, data: {isTrigger: false}});
       return updateInfusionHistory;
     } catch (_) {
       throw new BadRequestException({
@@ -162,6 +163,21 @@ export class PatientsService {
         message: `Invalid input`,
       });
     }
+  }
+
+  public async getMedicalHistoryByPatientId(id: number) {
+    const data = await this.prisma.medicleHistory.findMany({
+      where: { patientId: id },
+    });
+    return data;
+  }
+
+  public async getInfusionHistory(id: number) {
+    const data = await this.prisma.infusionHistory.findMany({
+      where: { patientId: id },
+      orderBy: { createdDate: 'desc' },
+    });
+    return data;
   }
 
   private async findUserByUsername(username: string) {
