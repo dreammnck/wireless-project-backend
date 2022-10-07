@@ -15,6 +15,7 @@ async function bootstrap() {
 
   app.use(cookieParser());
   app.useGlobalPipes(new ValidationPipe());
+  app.enableCors({origin: "*"})
 
 //   const projectId = "local-topic-364613";
 //   const region = "asia-east1";
