@@ -1,9 +1,6 @@
-import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { IsNotEmpty, IsNumber } from 'class-validator';
 
 export class CreatePatientInfusionHistoryDto {
-  @IsString()
-  @IsNotEmpty()
-  serialNumber: string;
 
   @IsNumber()
   @IsNotEmpty()

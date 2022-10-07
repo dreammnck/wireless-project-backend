@@ -25,7 +25,7 @@ export class RoomsService {
       return patient.isCheckout === false;
     });
 
-    return { ...room, patients: currentPatient };
+    return { ...room, patients: currentPatient.length === 0? []: currentPatient[0]};
   }
 
   public async update(updateRoomDto: UpdatedRoomDto, id: number) {

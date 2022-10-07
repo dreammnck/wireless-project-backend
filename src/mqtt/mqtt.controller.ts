@@ -17,6 +17,7 @@ export class MqttController {
     @Payload() data: SalineSensorData,
     @Ctx() _: MqttContext,
   ) {
+    console.log(data)
     await this.mqttService.handleSalineData(data);
   }
 }

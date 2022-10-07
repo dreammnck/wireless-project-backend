@@ -1,7 +1,7 @@
 import paho.mqtt.client as mqtt
 import sys
 
-host = "127.0.0.1"
+host = "35.221.225.127"
 port = 1883
 
 
@@ -15,7 +15,7 @@ if client.connect(host, port) != 0:
     print('Could not connect to MQTT broker')
     sys.exit(-1)
 
-client.subscribe('test')
+client.subscribe('saline')
 
 try:
     client.loop_forever()

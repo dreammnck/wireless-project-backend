@@ -23,8 +23,3 @@ services:
       - .env
 volumes: 
   persistant_data:
-
-# sensor จะมีกี่ชนิด
-# ปัญหา security ของ elk web socket
-# ปัญหา requirement
-
