@@ -8,8 +8,9 @@ export class MqttService {
 
   async handleSalineData(data: SalineSensorData) {
     const { sensorValue, roomId } = data;
+    const oldState = await this.prisma.room.findFirst({where: {name: roomId}});
 
-    if (sensorValue > 0.27) {
+    if (oldState.isTrigger ===  false && sensorValue > 0.27) {
       await this.prisma.room.update({
         where: { name: roomId },
         data: { isTrigger: true },
