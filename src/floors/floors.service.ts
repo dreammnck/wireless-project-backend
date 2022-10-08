@@ -31,6 +31,17 @@ export class FloorsService {
       where: { id: floorId },
       include: { rooms: true },
     });
+
+    // const rooms = await this.prisma.room.findMany({where: {floorId}});
+    // const roomWithAdditionalInfo = rooms.map( async (room) => {
+    //   const currentPatient = await this.prisma.patient.findFirst({where: {roomId: room.id, isCheckout: false}, select: {infusionHistory: true}});
+    //   if(! currentPatient) {
+    //     return {...room, estimateFinishTime: ''}
+    //   }
+
+    //   const currentInfusionHistory = currentPatient.infusionHistory.sort((obj1, obj2) => {return obj1.createdDate > obj2.createdDate? -1: 1})[0]
+    //   return {...room, estimateFinishTime: currentInfusionHistory.dropRate}
+    // })
     if (rooms.length === 0) {
       throw new NotFoundException({
         errorCode: HttpStatus.NOT_FOUND,

@@ -18,7 +18,6 @@ export class AuthService {
 
   async login(loginDto: LoginDto) {
     const { username, password } = loginDto;
-    console.log(loginDto)
     const user = await this.prisma.user.findUnique({ where: { username } });
 
     if (!user) {
