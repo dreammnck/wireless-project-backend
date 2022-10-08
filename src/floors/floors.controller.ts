@@ -4,7 +4,7 @@ import { Controller, Get, Res } from '@nestjs/common';
 import { Response } from 'express';
 import { FloorsService } from './floors.service';
 
-@UseGuards(JwtAuthGuard)
+// @UseGuards(JwtAuthGuard)
 @Controller('floors')
 export class FloorsController {
   constructor(private readonly floorsService: FloorsService) {}
