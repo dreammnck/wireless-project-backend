@@ -136,6 +136,42 @@ const createMedicalHistory = async () => {
   await prisma.medicleHistory.createMany({ data });
 };
 
+const createInfusionHistory = async () => {
+  const data = [
+    {
+      patientId: 1,
+      dropRate: 40,
+      nurse: 'Alex Jacobson',
+    },
+    {
+      patientId: 2,
+      dropRate: 100,
+      nurse: 'Cecile Runolfsdottir',
+    },
+    {
+      patientId: 3,
+      dropRate: 80,
+      nurse: 'Chelsea Thiel',
+    },
+    {
+      patientId: 4,
+      dropRate: 50,
+      nurse: 'Larue Hirthe',
+    },
+    {
+      patientId: 5,
+      dropRate: 40,
+      nurse: 'Issac Donnelly',
+    },
+    {
+      patientId: 6,
+      dropRate: 40,
+      nurse: 'Larue Hirthe',
+    },
+  ];
+
+  await prisma.infusionHistory.createMany({ data });
+};
 const main = async () => {
   await init();
   await createUser();
@@ -144,6 +180,7 @@ const main = async () => {
   await createAddress();
   await createPatient();
   await createMedicalHistory();
+  await createInfusionHistory();
 };
 
 main()

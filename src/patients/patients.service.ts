@@ -65,6 +65,10 @@ export class PatientsService {
     const patient = await this.findById(patientId);
     try {
       const nurse = await this.findUserByUsername(nurseUsername);
+      await this.prisma.infusionHistory.updateMany({
+        where: { isCompleted: false },
+        data: { isCompleted: true },
+      });
       const createInfusionHistory = await this.prisma.infusionHistory.create({
         data: {
           nurse: `${nurse.firstname} ${nurse.lastname}`,
@@ -72,7 +76,10 @@ export class PatientsService {
           ...createPatientInfusionHistoryDto,
         },
       });
-      await this.prisma.room.update({where: {id: patient.roomId}, data: {isTrigger: false}});
+      await this.prisma.room.update({
+        where: { id: patient.roomId },
+        data: { isTrigger: false },
+      });
       return createInfusionHistory;
     } catch (_) {
       throw new BadRequestException({
@@ -130,7 +137,9 @@ export class PatientsService {
   ) {
     const { id, ...rest } = updatePatientInfusionHistoryDto;
     const patient = await this.findById(patientId);
-    const infusionHistory = patient.infusionHistory.find((history) => {return  history.id === id});
+    const infusionHistory = patient.infusionHistory.find((history) => {
+      return history.id === id;
+    });
     if (!infusionHistory) {
       throw new NotFoundException({
         errorCode: HttpStatus.NOT_FOUND,
@@ -155,7 +164,10 @@ export class PatientsService {
           ...rest,
         },
       });
-      await this.prisma.room.update({where: {id: patient.roomId}, data: {isTrigger: false}});
+      await this.prisma.room.update({
+        where: { id: patient.roomId },
+        data: { isTrigger: false },
+      });
       return updateInfusionHistory;
     } catch (_) {
       throw new BadRequestException({

@@ -24,8 +24,8 @@ export class PatientsController {
     @Res() res: Response,
   ) {
     const patient = await this.patientsService.findById(id);
-    const {address, infusionHistory, medicalHostory, ...rest} = patient;
-    return res.json({ data: {address, ...rest} }).status(HttpStatus.OK);
+    const { address, infusionHistory, medicalHostory, ...rest } = patient;
+    return res.json({ data: { address, ...rest } }).status(HttpStatus.OK);
   }
 
   @Get(':id/medical-history')

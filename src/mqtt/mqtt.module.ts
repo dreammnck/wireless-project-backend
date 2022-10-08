@@ -14,9 +14,9 @@ import { MqttController } from './mqtt.controller';
           const mqttUrl = configService.get<string>('mqtt.url');
           return {
             transport: Transport.MQTT,
-                options: {
-                  url:  mqttUrl
-    },
+            options: {
+              url: mqttUrl,
+            },
           };
         },
         inject: [ConfigService],
