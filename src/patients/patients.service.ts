@@ -66,7 +66,7 @@ export class PatientsService {
     try {
       const nurse = await this.findUserByUsername(nurseUsername);
       await this.prisma.infusionHistory.updateMany({
-        where: { isCompleted: false },
+        where: { patientId: patientId },
         data: { isCompleted: true },
       });
       const createInfusionHistory = await this.prisma.infusionHistory.create({
@@ -78,7 +78,7 @@ export class PatientsService {
       });
       await this.prisma.room.update({
         where: { id: patient.roomId },
-        data: { isTrigger: false },
+        data: { isTrigger: false, estimateFinishTime: "" },
       });
       return createInfusionHistory;
     } catch (_) {

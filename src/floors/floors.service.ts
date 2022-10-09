@@ -30,36 +30,6 @@ export class FloorsService {
 
   public async findRoomByFloorId(floorId: number) {
     const rooms = await this.prisma.room.findMany({ where: { floorId } });
-
-    const roomWithAdditionalInfo = [];
-
-    for (const room of rooms) {
-      const currentPatient = await this.prisma.patient.findFirst({
-        where: { roomId: room.id, isCheckout: false },
-        select: { infusionHistory: true },
-      });
-
-      if (!currentPatient || room.isTrigger === false) {
-        roomWithAdditionalInfo.push({ estimateFinishTime: '', ...room });
-      } else {
-        const currentInfusionHistory = currentPatient.infusionHistory.filter(
-          (history) => {
-            return history.isCompleted === false;
-          },
-        );
-        roomWithAdditionalInfo.push({
-          estimateFinishTime:
-            currentInfusionHistory.length !== 0
-              ? new Date(
-                  new Date().getTime() +
-                    (100 / currentInfusionHistory[0].dropRate) * 60 * 60000,
-                ).toLocaleString('en-US', { timeZone: 'Asia/Bangkok' })
-              : '',
-          ...room,
-        });
-      }
-    }
-
     if (rooms.length === 0) {
       throw new NotFoundException({
         errorCode: HttpStatus.NOT_FOUND,
@@ -67,6 +37,6 @@ export class FloorsService {
       });
     }
 
-    return roomWithAdditionalInfo;
+    return rooms;
   }
 }

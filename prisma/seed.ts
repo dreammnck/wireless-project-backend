@@ -44,10 +44,16 @@ const createRoom = async () => {
   const data = [];
   for (let i = 1; i <= 11; i++) {
     for (let j = 1; j <= 14; j++) {
+      const isTrigger = i == 1 && j <= 6 ? false : Math.random() <= 0.5 ? false : true;
       data.push({
         name: `${i < 10 ? 0 : ''}${i}${j < 10 ? 0 : ''}${j}`,
         floorId: i,
-        isTrigger: Math.random() <= 0.5 ? false : true,
+        isTrigger: isTrigger,
+        estimateFinishTime: isTrigger
+          ? new Date(
+              new Date().getTime() + Math.random() * 5 * 60 * 60000,
+            ).toLocaleString('en-US', { timeZone: 'Asia/Bangkok' })
+          : '',
       });
     }
   }

@@ -31,12 +31,13 @@ model Floor {
 }
 
 model Room {
-  id        Int       @id @default(autoincrement())
-  name      String    @unique
-  floorId   Int
-  isTrigger Boolean   @default(false)
-  floor     Floor     @relation(fields: [floorId], references: [id])
-  patients  Patient[]
+  id                 Int       @id @default(autoincrement())
+  name               String    @unique
+  floorId            Int
+  isTrigger          Boolean   @default(false)
+  estimateFinishTime String    @default("")
+  floor              Floor     @relation(fields: [floorId], references: [id])
+  patients           Patient[]
 }
 
 model Patient {
